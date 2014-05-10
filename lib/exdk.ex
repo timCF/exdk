@@ -26,14 +26,30 @@ defmodule ExdkGS do
 		end
 	end
 
+
+	defcall getkeys(), state: datahandler do
+		{	:reply, 
+			:bitcask.list_keys(datahandler) |> Enum.map(&(:erlang.binary_to_term(&1))),
+			datahandler
+		}
+	end
+
 	# key, value - terms
   	defcast put( key, value ), state: datahandler do 
-  		:bitcask.put(datahandler, :erlang.term_to_binary(key), :erlang.term_to_binary(value))
+  		:ok = :bitcask.put(datahandler, :erlang.term_to_binary(key), :erlang.term_to_binary(value))
   		{:noreply, datahandler}
   	end
 
+
+  	# key - term
+  	defcast delete( key ), state: datahandler do
+  		:ok = :bitcask.delete(datahandler, :erlang.term_to_binary(key))
+  		{:noreply, datahandler}
+  	end
+
+
+
   	def terminate _reason, datahandler do
-  		#IO.puts "Terminating ExdkGS!!!"
   		:ok = :bitcask.close datahandler
   	end
 
