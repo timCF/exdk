@@ -4,7 +4,6 @@ defmodule Exdk.Mixfile do
   def project do
     [app: :exdk,
      version: "0.0.1",
-     elixir: "~> 0.13.2-dev",
      deps: deps]
   end
 
@@ -12,8 +11,7 @@ defmodule Exdk.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:bitcask,
-                    :exactor],
+    [applications: [:exactor],
      mod: {Exdk, []}]
   end
 
@@ -27,7 +25,6 @@ defmodule Exdk.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [{:bitcask, github: "basho/bitcask"},
-    {:exactor, github: "sasa1977/exactor"}]
+    [{:exactor, github: "sasa1977/exactor"}]
   end
 end
