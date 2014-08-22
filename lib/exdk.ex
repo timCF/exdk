@@ -40,6 +40,16 @@ defmodule Exdk do
     :ets.tab2list( @table )
   end
 
+  def putf(etskey, newdata) do
+    true = :ets.insert @table, {etskey, newdata}
+    Exdk.Server.save_call
+    :ok
+  end
+  def deletef(etskey) do
+    true = :ets.delete @table, etskey
+    Exdk.Server.save_call
+    :ok
+  end
 
 end
 
@@ -66,6 +76,16 @@ defmodule Exdk.Server do
     end
     {:ok, nil, @timeout}
   end
+  defcast save_call do
+    save
+    {:reply, :ok, nil, @timeout}
+  end
+  definfo :timeout do
+    save
+    {:noreply, nil, @timeout}
+  end
+
+
   defp use_new do
     case File.read("./program_data/new") do
       {:ok, ""}      -> use_old()
@@ -99,7 +119,8 @@ defmodule Exdk.Server do
                         :ok = write("./program_data/mark_new", "done")
     end
   end
-  definfo :timeout do
+
+  defp save do
     bindata = :erlang.term_to_binary(:ets.tab2list( @table ))
 
     :ok = write("./program_data/mark_new", "")
@@ -110,8 +131,6 @@ defmodule Exdk.Server do
     :ok = write("./program_data/mark_old", "")
     :ok = write("./program_data/old", reserve) # reserve copy of old state
     :ok = write("./program_data/mark_old","done") # success, write mark
-
-    {:noreply, nil, @timeout}
   end
 
   defp write(file, data) do
