@@ -59,7 +59,7 @@ defmodule Exdk.Server do
   @timeout :timer.seconds(10)
   @table :program_storage
 
-  use ExActor.GenServer
+  use ExActor.GenServer, export: :exdk_server
 
   definit do
     IO.puts "Starting Storage..."
