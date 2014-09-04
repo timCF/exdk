@@ -76,7 +76,7 @@ defmodule Exdk.Server do
     end
     {:ok, nil, @timeout}
   end
-  defcast save_call do
+  defcall save_call do
     save
     {:reply, :ok, nil, @timeout}
   end
